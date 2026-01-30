@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Framio — Video Generation Platform</title>
+  <meta name="description" content="Turn any website into a stunning marketing video in seconds. Generated in real time.">
+  <meta property="og:title" content="Framio — Coming Soon">
+  <meta property="og:description" content="Turn any website into a stunning marketing video in seconds.">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #000000;
+      --surface: rgba(28, 28, 30, 0.72);
+      --surface-solid: #1c1c1e;
+      --surface-elevated: rgba(44, 44, 46, 0.65);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #f5f5f7;
+      --text-secondary: #86868b;
+      --text-tertiary: #6e6e73;
+      --accent: #0a84ff;
+      --accent-hover: #409cff;
+      --green: #30d158;
+      --separator: rgba(255, 255, 255, 0.05);
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Soft ambient glow — iOS style */
+    .bg-glow {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .bg-glow::before {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(10, 132, 255, 0.12), transparent 70%);
+      animation: breathe 6s ease-in-out infinite;
+    }
+
+    .bg-glow::after {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      bottom: -100px;
+      right: -100px;
+      background: radial-gradient(circle, rgba(94, 92, 230, 0.08), transparent 70%);
+      animation: breathe 6s ease-in-out infinite reverse;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.6; transform: translateX(-50%) scale(1); }
+      50% { opacity: 1; transform: translateX(-50%) scale(1.1); }
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      max-width: 680px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Logo */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #0a84ff, #5e5ce6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(10, 132, 255, 0.3);
+    }
+
+    .logo-icon svg {
+      width: 22px;
+      height: 22px;
+      color: white;
+    }
+
+    .logo-text {
+      font-size: 1.625rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      color: var(--text);
+    }
+
+    /* Badge pill */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0.875rem;
+      background: var(--surface);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 2rem;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px rgba(48, 209, 88, 0.5);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+
+    /* Headline */
+    h1 {
+      font-size: clamp(2.25rem, 5.5vw, 3.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.035em;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    h1 .highlight {
+      background: linear-gradient(90deg, #0a84ff, #5e5ce6, #bf5af2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: clamp(0.9375rem, 2vw, 1.125rem);
+      font-weight: 400;
+      color: var(--text-secondary);
+      max-width: 420px;
+      line-height: 1.65;
+      margin-bottom: 2.75rem;
+      letter-spacing: -0.01em;
+    }
+
+    /* Glass card for the form */
+    .glass-card {
+      width: 100%;
+      max-width: 460px;
+      padding: 1.75rem;
+      background: var(--surface);
+      backdrop-filter: blur(40px) saturate(150%);
+      -webkit-backdrop-filter: blur(40px) saturate(150%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      margin-bottom: 4rem;
+    }
+
+    .form-wrapper {
+      display: flex;
+      gap: 0.625rem;
+      margin-bottom: 0.875rem;
+    }
+
+    .form-wrapper input {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      background: rgba(118, 118, 128, 0.12);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 0.9375rem;
+      font-family: inherit;
+      font-weight: 400;
+      outline: none;
+      transition: border-color 0.25s, background 0.25s;
+      letter-spacing: -0.01em;
+    }
+
+    .form-wrapper input::placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .form-wrapper input:focus {
+      border-color: var(--accent);
+      background: rgba(118, 118, 128, 0.18);
+    }
+
+    .form-wrapper button {
+      padding: 0.875rem 1.375rem;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      letter-spacing: -0.01em;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .form-wrapper button:hover {
+      background: var(--accent-hover);
+    }
+
+    .form-wrapper button:active {
+      transform: scale(0.96);
+    }
+
+    .form-note {
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      font-weight: 400;
+    }
+
+    /* Success */
+    .success-card {
+      display: none;
+      width: 100%;
+      max-width: 460px;
+      padding: 1.5rem;
+      background: var(--surface);
+      backdrop-filter: blur(40px) saturate(150%);
+      -webkit-backdrop-filter: blur(40px) saturate(150%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      margin-bottom: 4rem;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .success-card.show { display: flex; }
+
+    .success-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(48, 209, 88, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-icon svg { color: var(--green); }
+
+    .success-card h3 {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .success-card p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    /* Feature list — iOS settings style */
+    .features {
+      width: 100%;
+      max-width: 460px;
+      background: var(--surface);
+      backdrop-filter: blur(40px) saturate(150%);
+      -webkit-backdrop-filter: blur(40px) saturate(150%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+    }
+
+    .feature + .feature {
+      border-top: 1px solid var(--separator);
+    }
+
+    .feature-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .feature-icon.blue { background: rgba(10, 132, 255, 0.15); }
+    .feature-icon.purple { background: rgba(94, 92, 230, 0.15); }
+    .feature-icon.pink { background: rgba(191, 90, 242, 0.15); }
+
+    .feature-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .feature-text {
+      text-align: left;
+    }
+
+    .feature-text h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.125rem;
+    }
+
+    .feature-text p {
+      font-size: 0.8125rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      letter-spacing: -0.005em;
+    }
+
+    /* Footer */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+      letter-spacing: -0.005em;
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      .form-wrapper {
+        flex-direction: column;
+      }
+      .form-wrapper button {
+        padding: 0.9375rem;
+      }
+      .container {
+        padding: 1.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-glow"></div>
+
+  <main class="container">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+      </div>
+      <span class="logo-text">Framio</span>
+    </div>
+
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Coming Soon
+    </div>
+
+    <h1>Turn any URL into a <span class="highlight">marketing video</span></h1>
+    <p class="subtitle">Paste a website link and get a polished video generated in real time. No editing required.</p>
+
+    <div class="glass-card" id="form-container">
+      <form class="form-wrapper" id="waitlist-form">
+        <input type="email" placeholder="you@company.com" required aria-label="Email address" autocomplete="email">
+        <button type="submit">Join Waitlist</button>
+      </form>
+      <p class="form-note">Be the first to know when we launch. No spam, ever.</p>
+    </div>
+
+    <div class="success-card" id="success-card">
+      <div class="success-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      </div>
+      <h3>You're on the list</h3>
+      <p>We'll let you know as soon as Framio is ready.</p>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <div class="feature-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4"/><path d="M12 16V8"/></svg>
+        </div>
+        <div class="feature-text">
+          <h3>Paste a URL</h3>
+          <p>Your site's content, colors, and brand analyzed automatically.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon purple">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#5e5ce6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></svg>
+        </div>
+        <div class="feature-text">
+          <h3>Smart Narration</h3>
+          <p>Script, voiceover, and music generated in real time with studio quality.</p>
+        </div>
+      </div>
+      <div class="feature">
+        <div class="feature-icon pink">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#bf5af2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div class="feature-text">
+          <h3>Render & Share</h3>
+          <p>Get a polished 1080p video ready to share anywhere.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    &copy; 2025 Framio. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById('waitlist-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = this.querySelector('button');
+      const email = this.querySelector('input').value;
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      fetch('https://formspree.io/f/mykjlagn', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email: email })
+      })
+      .then(function(res) {
+        if (res.ok) {
+          document.getElementById('form-container').style.display = 'none';
+          document.getElementById('success-card').classList.add('show');
+        } else {
+          btn.textContent = 'Try Again';
+          btn.disabled = false;
+        }
+      })
+      .catch(function() {
+        btn.textContent = 'Try Again';
+        btn.disabled = false;
+      });
+    });
+  </script>
+</body>
+</html>
