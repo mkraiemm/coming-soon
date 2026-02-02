@@ -11,5 +11,5 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Framio coming soon is live on port ${PORT}`);
+  console.log(`Rendrio coming soon is live on port ${PORT}`);
 });
